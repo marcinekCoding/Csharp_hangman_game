@@ -164,14 +164,14 @@ public class ConsoleRenderer
 
         while (true)
         {
-            Console.Write("  Choose option (1-5): ");
+            Console.Write("  Choose option (1-6): ");
             Console.ForegroundColor = ConsoleColor.Green;
             string? input = Console.ReadLine();
             Console.ResetColor();
 
-            if (!int.TryParse(input, out int choice) || choice < 1 || choice > 5)
+            if (!int.TryParse(input, out int choice) || choice < 1 || choice > 6)
             {
-                WriteLineColor("  ! Invalid choice. Pick a number from 1 to 5.", ConsoleColor.Red);
+                WriteLineColor("  ! Invalid choice. Pick a number from 1 to 6.", ConsoleColor.Red);
                 continue;
             }
 
@@ -181,6 +181,7 @@ public class ConsoleRenderer
                 2 => "panstwa",
                 3 => "miasta",
                 4 => "filmy",
+                5 => "football",
                 _ => "words"
             };
         }
@@ -195,7 +196,8 @@ public class ConsoleRenderer
         WriteBox("2  COUNTRIES", ConsoleColor.DarkCyan);
         WriteBox("3  CITIES", ConsoleColor.DarkCyan);
         WriteBox("4  MOVIES", ConsoleColor.DarkCyan);
-        WriteBox("5  GENERAL", ConsoleColor.DarkCyan);
+        WriteBox("5  FOOTBALL", ConsoleColor.DarkCyan);
+        WriteBox("6  GENERAL", ConsoleColor.DarkCyan);
 
         Console.WriteLine();
     }

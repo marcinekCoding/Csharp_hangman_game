@@ -19,7 +19,9 @@ Console hangman written in **C#** and **.NET**. Guess the hidden word letter by 
 ## Features
 
 - **ASCII UI** with colors — banner, gallows, word box, mistake tracker
-- **Random words** loaded from `Data/words.txt`
+- **Random words** loaded from category files in `Data/`
+- **6 categories** — math, countries, cities, movies, football, general
+- **Play again** — start a new round after win/loss
 - **Game state** — win / lose / in progress (`GameResult`)
 - **Mistake limit** — configurable wrong guesses (`Mistakes`)
 - **Separated concerns** — logic, UI, and data in different folders
@@ -30,8 +32,10 @@ Console hangman written in **C#** and **.NET**. Guess the hidden word letter by 
 
 1. Run the game (`dotnet run`).
 2. Press **Enter** on the welcome screen.
-3. Type **one letter** and confirm with Enter.
-4. Guess the whole word before you run out of mistakes.
+3. Pick a **category** (1–6).
+4. Type **one letter** and confirm with Enter.
+5. Guess the whole word before you run out of mistakes.
+6. Press **Enter** after the result to play again.
 
 ---
 
@@ -69,7 +73,12 @@ dotnet build
 wisielec_game/
 ├── Data/
 │   ├── WordRepo.cs       # loads words from file, random pick
-│   └── words.txt         # word list (one word per line)
+│   ├── words.txt         # general words
+│   ├── math.txt          # math terms
+│   ├── panstwa.txt       # countries
+│   ├── miasta.txt        # cities
+│   ├── filmy.txt         # movies
+│   └── football.txt      # players & clubs
 ├── Game/
 │   └── wisielec_engine.cs  # game logic (Hangman engine)
 ├── Models/
@@ -84,6 +93,17 @@ wisielec_game/
 └── Wisielec.csproj
 ```
 
+### Categories
+
+| Option | File | Content |
+|--------|------|---------|
+| 1 | `math.txt` | Math terms |
+| 2 | `panstwa.txt` | Countries |
+| 3 | `miasta.txt` | Cities |
+| 4 | `filmy.txt` | Movies |
+| 5 | `football.txt` | Famous players & football clubs |
+| 6 | `words.txt` | General (default) |
+
 | Layer | Responsibility |
 |-------|----------------|
 | `Game/` | Rules: letters, win/lose, game loop |
@@ -95,15 +115,15 @@ wisielec_game/
 
 ## Adding new words
 
-Edit `Data/words.txt` — **one word per line**, lowercase, no spaces:
+Edit the matching file in `Data/` — **one word per line**, lowercase, no spaces:
 
 ```text
-toyota
-programming
-hangman
-computer
-car
+messi
+realmadrid
+liverpool
 ```
+
+Available files: `words.txt`, `math.txt`, `panstwa.txt`, `miasta.txt`, `filmy.txt`, `football.txt`.
 
 After `dotnet build`, the file is copied to the output folder automatically (`Wisielec.csproj`).
 
