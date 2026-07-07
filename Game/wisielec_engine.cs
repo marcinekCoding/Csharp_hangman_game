@@ -2,87 +2,109 @@ using System;
 
 public class WisielecGame
 {
-    string _wordToGuess = "Toyota";
-    char[] geussedLetters;
+    private const int MaxMistakes = 5;
 
+    private string _wordToGuess = "";
+    private char[] _guessedLetters = Array.Empty<char>();
+    private Mistakes _mistakes = null!;
+    private GameResult _gameResult;
+    private readonly ConsoleRenderer _renderer = new();
+    private readonly WordRepo _wordRepo = new();
 
-    void WholeGame()
+    private string _statusMessage = "";
+    private ConsoleColor _statusColor = ConsoleColor.Gray;
+
+    public void WholeGame()
     {
-        initGame();
+        InitGame();
+        _renderer.ShowWelcome(MaxMistakes);
 
-        while (graszDalej())
+        while (_gameResult == GameResult.in_progress)
         {
-            podajLitere(char c);
-            pokazHaslo();
-        }
-    }
+            _renderer.RenderGame(
+                _guessedLetters,
+                _mistakes.mistakes_made,
+                MaxMistakes,
+                _statusMessage,
+                _statusColor);
 
-    void initGame()
-    {
-        //losowanie slowa 
-        string _wordToGuess = "Toyota";
-        char[] geussedLetters;
-        geussedLetters = new char[_wordToGuess.Length];
-        Mistakes miastakes = new Mistakes(5);
-        for (int c =0; c<_wordToGuess.Length;c++)
-        {
-            geussedLetters[c] = '_';
-        }
-    }
-
-    bool graszDalej()
-    {
-        if (slowa_te_same()) return false;
-        if (mistakes.is_mistakes_left())
-        {
-            return true;
+            char letter = _renderer.AskForLetter();
+            SprawdzLitere(letter);
+            SprawdzStatus();
         }
 
+        _renderer.RenderGame(
+            _guessedLetters,
+            _mistakes.mistakes_made,
+            MaxMistakes,
+            _statusMessage,
+            _statusColor);
+
+        _renderer.ShowResult(_gameResult, _wordToGuess);
     }
 
-    bool slowa_te_same()
+    void InitGame()
     {
-        int i = 0;
-        foreach (var c in geussedLetters)
+        _gameResult = GameResult.in_progress;
+        _wordToGuess = _wordRepo.GetRandomWord();
+        _guessedLetters = new char[_wordToGuess.Length];
+        _mistakes = new Mistakes(MaxMistakes);
+        _statusMessage = "Powodzenia!";
+
+        for (int i = 0; i < _wordToGuess.Length; i++)
+            _guessedLetters[i] = '_';
+    }
+
+    bool SlowaTeSame()
+    {
+        for (int i = 0; i < _wordToGuess.Length; i++)
         {
-            if (_wordToGuess[i] != c)
-            {
+            if (_wordToGuess[i] != _guessedLetters[i])
                 return false;
-            }
-            i++;
         }
         return true;
     }
 
-    void podajLitere(char c)
+    void SprawdzLitere(char c)
     {
-        int sizer = _wordToGuess.Length;
-        bool czy_cos_zgadniete = false;
-        for (int i = 0; i < sizer; i++)
+        bool czyCosZgadniete = false;
+
+        for (int i = 0; i < _wordToGuess.Length; i++)
         {
             if (c == _wordToGuess[i])
             {
-                czy_cos_zgadniete = true;
-                geussedLetters[i] == c;
+                czyCosZgadniete = true;
+                _guessedLetters[i] = c;
             }
         }
-        if (!czy_cos_zgadniete)
+
+        if (czyCosZgadniete)
         {
-            Console.WriteLine("Nie ma takiej litery");
+            _statusMessage = $"Litera '{char.ToUpper(c)}' jest w haśle!";
+            _statusColor = ConsoleColor.Green;
+        }
+        else
+        {
+            _mistakes.add_mistake();
+            _statusMessage = $"Litera '{char.ToUpper(c)}' nie występuje w haśle.";
+            _statusColor = ConsoleColor.Red;
         }
     }
 
-    void pokazHaslo()
+    void SprawdzStatus()
     {
-        foreach (var c in geussedLetters)
+        if (!_mistakes.is_mistakes_left())
         {
-            Console.WriteLine(c);
+            _gameResult = GameResult.lost;
+            _statusMessage = "Wykorzystałeś wszystkie błędne próby.";
+            _statusColor = ConsoleColor.Red;
+        }
 
+        if (SlowaTeSame())
+        {
+            _gameResult = GameResult.win;
+            _statusMessage = "Odgadłeś całe hasło!";
+            _statusColor = ConsoleColor.Green;
         }
     }
-
-
-
-
-
-};
+}
