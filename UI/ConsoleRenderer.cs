@@ -202,13 +202,41 @@ public class ConsoleRenderer
 
     private static void WriteBanner()
     {
-        WriteLineColor(@"
-  ██╗    ██╗██╗███████╗██╗███████╗██╗     ███████╗ ██████╗
-  ██║    ██║██║██╔════╝██║██╔════╝██║     ██╔════╝██╔════╝
-  ██║ █╗ ██║██║███████╗██║█████╗  ██║     █████╗  ██║     
-  ██║███╗██║██║╚════██║██║██╔══╝  ██║     ██╔══╝  ██║     
-  ╚███╔███╔╝██║███████║██║███████╗███████╗███████╗╚██████╗
-   ╚══╝╚══╝ ╚═╝╚══════╝╚═╝╚══════╝╚══════╝╚══════╝ ╚═════╝", ConsoleColor.Cyan);
+        string[] hangman =
+        {
+            "██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗",
+            "██║  ██║██╔══██╗████╗  ██║██╔════╝ ████╗ ████║██╔══██╗████╗  ██║",
+            "███████║███████║██╔██╗ ██║██║  ███╗██╔████╔██║███████║██╔██╗ ██║",
+            "██╔══██║██╔══██║██║╚██╗██║██║   ██║██║╚██╔╝██║██╔══██║██║╚██╗██║",
+            "██║  ██║██║  ██║██║ ╚████║╚██████╔╝██║ ╚═╝ ██║██║  ██║██║ ╚████║",
+            "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝"
+        };
+
+        string[] game =
+        {
+            " ██████╗  █████╗ ███╗   ███╗███████╗",
+            "██╔════╝ ██╔══██╗████╗ ████║██╔════╝",
+            "██║  ███╗███████║██╔████╔██║█████╗",
+            "╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗"
+        };
+
+        const int gameStartColumn = 68;
+
+        for (int i = 0; i < hangman.Length; i++)
+        {
+            Console.Write("  ");
+            WriteColor(hangman[i], ConsoleColor.Cyan);
+
+            int gameIndex = i - (hangman.Length - game.Length);
+            if (gameIndex >= 0)
+            {
+                int padding = gameStartColumn - (2 + hangman[i].Length);
+                Console.Write(new string(' ', Math.Max(2, padding)));
+                WriteColor(game[gameIndex], ConsoleColor.DarkYellow);
+            }
+
+            Console.WriteLine();
+        }
     }
 
     private static void WriteLineColor(string text, ConsoleColor color)

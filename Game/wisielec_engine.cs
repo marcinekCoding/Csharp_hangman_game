@@ -49,7 +49,7 @@ public class WisielecGame
         _wordToGuess = _wordRepo.GetRandomWord();
         _guessedLetters = new char[_wordToGuess.Length];
         _mistakes = new Mistakes(MaxMistakes);
-        _statusMessage = "Powodzenia!";
+        _statusMessage = "Good luck!";
 
         for (int i = 0; i < _wordToGuess.Length; i++)
             _guessedLetters[i] = '_';
@@ -80,13 +80,13 @@ public class WisielecGame
 
         if (czyCosZgadniete)
         {
-            _statusMessage = $"Litera '{char.ToUpper(c)}' jest w haśle!";
+            _statusMessage = $"Letter '{char.ToUpper(c)}' is in the word!";
             _statusColor = ConsoleColor.Green;
         }
         else
         {
             _mistakes.add_mistake();
-            _statusMessage = $"Litera '{char.ToUpper(c)}' nie występuje w haśle.";
+            _statusMessage = $"Letter '{char.ToUpper(c)}' is not in the word.";
             _statusColor = ConsoleColor.Red;
         }
     }
@@ -96,14 +96,14 @@ public class WisielecGame
         if (!_mistakes.is_mistakes_left())
         {
             _gameResult = GameResult.lost;
-            _statusMessage = "Wykorzystałeś wszystkie błędne próby.";
+            _statusMessage = "You used all your wrong guesses.";
             _statusColor = ConsoleColor.Red;
         }
 
         if (SlowaTeSame())
         {
             _gameResult = GameResult.win;
-            _statusMessage = "Odgadłeś całe hasło!";
+            _statusMessage = "You guessed the whole word!";
             _statusColor = ConsoleColor.Green;
         }
     }
