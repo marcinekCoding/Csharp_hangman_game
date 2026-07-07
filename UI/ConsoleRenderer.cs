@@ -155,6 +155,61 @@ public class ConsoleRenderer
         }
     }
 
+    public string AskForCategory()
+    {
+        Console.Clear();
+        WriteBanner();
+        Console.WriteLine();
+        ShowCategoryMenu();
+
+        while (true)
+        {
+            Console.Write("  Choose option (1-5): ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            string? input = Console.ReadLine();
+            Console.ResetColor();
+
+            if (!int.TryParse(input, out int choice) || choice < 1 || choice > 5)
+            {
+                WriteLineColor("  ! Invalid choice. Pick a number from 1 to 5.", ConsoleColor.Red);
+                continue;
+            }
+
+            return choice switch
+            {
+                1 => "math",
+                2 => "panstwa",
+                3 => "miasta",
+                4 => "filmy",
+                _ => "words"
+            };
+        }
+    }
+
+    private static void ShowCategoryMenu()
+    {
+        WriteBox("CHOOSE CATEGORY", ConsoleColor.Cyan);
+        Console.WriteLine();
+
+        WriteBox("1  MATH", ConsoleColor.DarkCyan);
+        WriteBox("2  COUNTRIES", ConsoleColor.DarkCyan);
+        WriteBox("3  CITIES", ConsoleColor.DarkCyan);
+        WriteBox("4  MOVIES", ConsoleColor.DarkCyan);
+        WriteBox("5  GENERAL", ConsoleColor.DarkCyan);
+
+        Console.WriteLine();
+    }
+
+    private static void WriteBox(string text, ConsoleColor color)
+    {
+        const int width = 35;
+        string padded = text.Length >= width ? text[..width] : text.PadLeft((width + text.Length) / 2).PadRight(width);
+
+        WriteLineColor($"  ╔{new string('═', width)}╗", color);
+        WriteLineColor($"  ║{padded}║", color);
+        WriteLineColor($"  ╚{new string('═', width)}╝", color);
+    }
+
     public void ShowResult(GameResult result, string word)
     {
         Console.WriteLine();
@@ -162,20 +217,20 @@ public class ConsoleRenderer
         if (result == GameResult.win)
         {
             WriteLineColor("  ╔═══════════════════════════════════╗", ConsoleColor.Green);
-            WriteLineColor("  ║      CONGRATULATIONS! YOU WIN!      ║", ConsoleColor.Green);
+            WriteLineColor("  ║      CONGRATULATIONS! YOU WIN!    ║", ConsoleColor.Green);
             WriteLineColor("  ╚═══════════════════════════════════╝", ConsoleColor.Green);
             WriteLineColor($"  Word: {word.ToUpper()}", ConsoleColor.Yellow);
         }
         else
         {
             WriteLineColor("  ╔═══════════════════════════════════╗", ConsoleColor.Red);
-            WriteLineColor("  ║             GAME OVER               ║", ConsoleColor.Red);
+            WriteLineColor("  ║             GAME OVER             ║", ConsoleColor.Red);
             WriteLineColor("  ╚═══════════════════════════════════╝", ConsoleColor.Red);
             WriteLineColor($"  The word was: {word.ToUpper()}", ConsoleColor.Yellow);
         }
 
         Console.WriteLine();
-        WriteLineColor("  Press Enter to exit...", ConsoleColor.DarkGray);
+        WriteLineColor("  Press Enter to play again...", ConsoleColor.DarkGray);
         Console.ReadLine();
         Console.ResetColor();
     }

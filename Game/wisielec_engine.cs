@@ -2,22 +2,33 @@ using System;
 
 public class WisielecGame
 {
-    private const int MaxMistakes = 5;
+    private const int MaxMistakes = 10;
 
     private string _wordToGuess = "";
     private char[] _guessedLetters = Array.Empty<char>();
     private Mistakes _mistakes = null!;
     private GameResult _gameResult;
     private readonly ConsoleRenderer _renderer = new();
-    private readonly WordRepo _wordRepo = new();
+    private WordRepo _wordRepo = null!;
 
     private string _statusMessage = "";
     private ConsoleColor _statusColor = ConsoleColor.Gray;
 
     public void WholeGame()
     {
-        InitGame();
         _renderer.ShowWelcome(MaxMistakes);
+        string category = _renderer.AskForCategory();
+
+        while (true)
+        {
+            PlayRound(category);
+            _renderer.ShowResult(_gameResult, _wordToGuess);
+        }
+    }
+
+    void PlayRound(string category)
+    {
+        InitGame(category);
 
         while (_gameResult == GameResult.in_progress)
         {
@@ -39,13 +50,12 @@ public class WisielecGame
             MaxMistakes,
             _statusMessage,
             _statusColor);
-
-        _renderer.ShowResult(_gameResult, _wordToGuess);
     }
 
-    void InitGame()
+    void InitGame(string category)
     {
         _gameResult = GameResult.in_progress;
+        _wordRepo = new WordRepo(category);
         _wordToGuess = _wordRepo.GetRandomWord();
         _guessedLetters = new char[_wordToGuess.Length];
         _mistakes = new Mistakes(MaxMistakes);
