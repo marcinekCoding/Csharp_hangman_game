@@ -21,6 +21,8 @@ Console hangman written in **C#** and **.NET**. Guess the hidden word letter by 
 - **ASCII UI** with colors — banner, gallows, word box, mistake tracker
 - **Random words** loaded from category files in `Data/`
 - **6 categories** — math, countries, cities, movies, football, general
+- **Wrong letters panel** — shows all incorrect letters used in current round
+- **Duplicate-letter protection** — repeated letter does not consume another mistake
 - **Play again** — start a new round after win/loss
 - **Game state** — win / lose / in progress (`GameResult`)
 - **Mistake limit** — configurable wrong guesses (`Mistakes`)
@@ -35,7 +37,9 @@ Console hangman written in **C#** and **.NET**. Guess the hidden word letter by 
 3. Pick a **category** (1–6).
 4. Type **one letter** and confirm with Enter.
 5. Guess the whole word before you run out of mistakes.
-6. Press **Enter** after the result to play again.
+6. Track your wrong guesses in the **Wrong letters** line.
+7. If you type the same letter again, the game warns you and does not add a mistake.
+8. Press **Enter** after the result to play again.
 
 ---
 
