@@ -89,6 +89,7 @@ public class ConsoleRenderer
 
     public void RenderGame(
         char[] guessedLetters,
+        char[] triedLetters,
         int mistakesMade,
         int maxMistakes,
         string statusMessage,
@@ -126,6 +127,7 @@ public class ConsoleRenderer
         Console.WriteLine();
 
         RenderMistakeBar(mistakesMade, maxMistakes);
+        RenderTriedLetters(triedLetters);
 
         if (!string.IsNullOrEmpty(statusMessage))
         {
@@ -254,6 +256,30 @@ public class ConsoleRenderer
         WriteColor($"({mistakesMade}/{maxMistakes})", ConsoleColor.Gray);
         Console.Write("   Remaining: ");
         WriteColor(remaining.ToString(), remaining <= 1 ? ConsoleColor.Red : ConsoleColor.Green);
+        Console.WriteLine();
+    }
+
+    private static void RenderTriedLetters(char[] triedLetters)
+    {
+        Console.Write("  Wrong letters: ");
+
+        bool hasWrongLetters = false;
+        for (int i = 0; i < triedLetters.Length; i++)
+        {
+            char letter = triedLetters[i];
+            if (letter == '\0')
+                continue;
+
+            if (hasWrongLetters)
+                WriteColor(", ", ConsoleColor.DarkGray);
+
+            WriteColor(char.ToUpper(letter).ToString(), ConsoleColor.Red);
+            hasWrongLetters = true;
+        }
+
+        if (!hasWrongLetters)
+            WriteColor("none", ConsoleColor.DarkGray);
+
         Console.WriteLine();
     }
 

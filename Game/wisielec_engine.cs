@@ -6,6 +6,7 @@ public class WisielecGame
 
     private string _wordToGuess = "";
     private char[] _guessedLetters = Array.Empty<char>();
+    private char[] _triedLetters = Array.Empty<char>();
     private Mistakes _mistakes = null!;
     private GameResult _gameResult;
     private readonly ConsoleRenderer _renderer = new();
@@ -34,6 +35,7 @@ public class WisielecGame
         {
             _renderer.RenderGame(
                 _guessedLetters,
+                _triedLetters,
                 _mistakes.mistakes_made,
                 MaxMistakes,
                 _statusMessage,
@@ -46,6 +48,7 @@ public class WisielecGame
 
         _renderer.RenderGame(
             _guessedLetters,
+            _triedLetters,
             _mistakes.mistakes_made,
             MaxMistakes,
             _statusMessage,
@@ -58,6 +61,7 @@ public class WisielecGame
         _wordRepo = new WordRepo(category);
         _wordToGuess = _wordRepo.GetRandomWord();
         _guessedLetters = new char[_wordToGuess.Length];
+        _triedLetters = new char[10];
         _mistakes = new Mistakes(MaxMistakes);
         _statusMessage = "Good luck!";
 
@@ -77,6 +81,13 @@ public class WisielecGame
 
     void SprawdzLitere(char c)
     {
+        if (CzyLiteraBylaUzyta(c))
+        {
+            _statusMessage = $"Letter '{char.ToUpper(c)}' was already used.";
+            _statusColor = ConsoleColor.Yellow;
+            return;
+        }
+
         bool czyCosZgadniete = false;
 
         for (int i = 0; i < _wordToGuess.Length; i++)
@@ -95,10 +106,28 @@ public class WisielecGame
         }
         else
         {
+            _triedLetters[_mistakes.mistakes_made] = c;
             _mistakes.add_mistake();
             _statusMessage = $"Letter '{char.ToUpper(c)}' is not in the word.";
             _statusColor = ConsoleColor.Red;
         }
+    }
+
+    bool CzyLiteraBylaUzyta(char c)
+    {
+        for (int i = 0; i < _guessedLetters.Length; i++)
+        {
+            if (_guessedLetters[i] == c)
+                return true;
+        }
+
+        for (int i = 0; i < _triedLetters.Length; i++)
+        {
+            if (_triedLetters[i] == c)
+                return true;
+        }
+
+        return false;
     }
 
     void SprawdzStatus()
